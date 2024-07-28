@@ -16,6 +16,7 @@
      <div class="container">
           <h1 class="text-center"> Users </h1>
           <div class="table-responsive text-center table-sm">
+               <?php if(count($users) > 0){  ?>
                <table class="table table-dark">
                     <thead>
                          <tr>
@@ -34,6 +35,7 @@
                          <?php }; ?>
                     </tbody>
                </table>
+               <?php } ?>
           </div>
      </div>
 

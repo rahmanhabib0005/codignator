@@ -60,8 +60,9 @@ class User extends Model
     }
 
     function getUsersData(){
-        $query = $this->db->query("SELECT id, name, email FROM ".$this->table."");
-        $res = $query->getResultArray();
+        // $query = $this->db->query("SELECT id, name, email FROM ".$this->table."");
+        // $res = $query->getResultArray();
+        $res = $this->findAll();
         return $res;
     }
 }

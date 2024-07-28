@@ -34,14 +34,8 @@ class User extends Migration
                 'constraint' => 255,
                 'null' => false
             ],
-            'created_at' => [
-                'type' => 'TIMESTAMP',
-                'default' => false
-            ],
-            'updated_at' => [
-                'type' => 'TIMESTAMP',
-                'null' => false
-            ],
+            'created_at datetime default current_timestamp',
+            'updated_at datetime default current_timestamp on update current_timestamp'
         ]);
 
         $this->forge->addKey('id');
