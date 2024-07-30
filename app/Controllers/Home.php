@@ -60,14 +60,39 @@ class Home extends BaseController
 
         $img = $this->request->getFile('image');
 
+        if ($img->isValid() && !$img->hasMoved()) {
 
-        if (! $img->hasMoved()) {
-            $filepath = WRITEPATH . $img->store('image/');
-
-            $data = ['uploaded_fileinfo' => new File($filepath)];
-            dd($filepath);
-            // return view('upload_success', $data);
+                $filepath = FCPATH . 'uploads/image/' . $img->getName();
+                
+                // Ensure the file was moved
+                if (file_exists($filepath)) {
+                    // Store file information
+                    $data = ['uploaded_fileinfo' => new File($filepath)];
+                    
+                    // Debugging output
+                    dd($filepath);
+                    
+                    // Return the view with the uploaded file data
+                    // return view('upload_success', $data);
+                } else {
+                    echo 'File move failed: file does not exist at the expected location.';
+                }
+            } else {
+                echo 'File move failed: unable to move the file.';
+            }
+        } else {
+            echo 'The file is not valid or has already been moved.';
         }
+        
+
+
+        // if (! $img->hasMoved()) {
+        //     $img->move('/public/uploads/image/');
+        //     $filepath = WRITEPATH . $img->store('image/');
+        //     $data = ['uploaded_fileinfo' => new File($filepath)];
+        //     dd($filepath);
+        //     // return view('upload_success', $data);
+        // }
 
         $data = ['errors' => 'The file has already been moved.'];
 
