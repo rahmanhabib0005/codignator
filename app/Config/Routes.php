@@ -8,7 +8,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 // $routes->setAutoRoute(true);
 $routes->get('/', 'Home::index');
-$routes->get('/page/(:segment)', [Home::class,'view']);
+$routes->get('/page/(:segment)', [Home::class,'view'],['filter' => 'auth']);
 $routes->post('/user/insert',[Home::class, 'store']);
 
 

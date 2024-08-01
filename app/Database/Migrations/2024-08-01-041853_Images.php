@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class User extends Migration
+class Images extends Migration
 {
     public function up()
     {
@@ -19,31 +19,26 @@ class User extends Migration
                 'constraint' => 255,
                 'null' => true
             ],
-            'username' => [
+            'path' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
                 'null' => true
             ],
-            'email' => [
+            'type' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
-                'null' => false
-            ],
-            'password' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-                'null' => false
+                'null' => true
             ],
             'created_at datetime default current_timestamp',
             'updated_at datetime default current_timestamp on update current_timestamp'
         ]);
 
         $this->forge->addPrimaryKey('id');
-        $this->forge->createTable('users');
+        $this->forge->createTable('images');
     }
 
     public function down()
     {
-        $this->forge->dropTable('users');
+        $this->forge->dropTable('images');
     }
 }

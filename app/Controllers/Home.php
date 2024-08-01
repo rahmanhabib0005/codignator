@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Image;
 use App\Models\User;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\Files\File;
@@ -33,8 +34,12 @@ class Home extends BaseController
         // return view('templates/header', $data)
         //     . view('pages/' . $page)
         //     . view('templates/footer');
+        $images = [];
+        if($page == 'about') {
+            $images = model(Image::class)->getImageData();
+        }
 
-        return view('pages/' . $page, ['page' => $page]);
+        return view('pages/' . $page, ['page' => $page, 'images' => $images]);
     }
 
     public function store()
@@ -52,47 +57,78 @@ class Home extends BaseController
                 ],
             ],
         ];
-        if (! $this->validateData([], $validationRule)) {
+        if (!$this->validateData([], $validationRule)) {
             $data = ['errors' => $this->validator->getErrors()];
-
-            
         }
 
-        $img = $this->request->getFile('image');
+        $images = $this->request->getFiles();
+        // $img = $this->request->getFile('image');
 
-        if ($img->isValid() && !$img->hasMoved()) {
-
-                $filepath = FCPATH . 'uploads/image/' . $img->getName();
+        foreach ($images['image'] as $key => $img) {
+            $data['type'] = $this->request->getPost('name');
+            // $data['type'] = $img->getClientExtension();
+            
+            if ($img->isValid() && !$img->hasMoved()) {
+                // Define the public path
+                $publicPath = FCPATH . 'uploads/image/';
                 
-                // Ensure the file was moved
+                // Ensure the directory exists
+                if (!is_dir($publicPath)) {
+                    mkdir($publicPath, 0777, true);
+                }
+                
+                // Move the file to the public path
+                $newName = $img->getRandomName();
+                $data['name'] = $newName;
+                $img->move($publicPath, $newName);
+        
+                $filepath = $publicPath . $newName;
+        
                 if (file_exists($filepath)) {
-                    // Store file information
-                    $data = ['uploaded_fileinfo' => new File($filepath)];
-                    
-                    // Debugging output
-                    dd($filepath);
-                    
-                    // Return the view with the uploaded file data
-                    // return view('upload_success', $data);
+                    $data['path'] = 'uploads/image/' . $newName;
+                    $data['uploaded_fileinfo'] = new File($filepath);
+        
+                    // $filepath = WRITEPATH . $img->store('image/');
+                    // $data = ['uploaded_fileinfo' => new File($filepath)];
+
+                    // Assuming Image is a model responsible for storing image data
+                    $ImageModel = new Image();
+                    $ImageModel->storeImagePath($data);
                 } else {
                     echo 'File move failed: file does not exist at the expected location.';
                 }
-            } else {
-                echo 'File move failed: unable to move the file.';
             }
-        } else {
-            echo 'The file is not valid or has already been moved.';
         }
-        
 
 
-        // if (! $img->hasMoved()) {
-        //     $img->move('/public/uploads/image/');
-        //     $filepath = WRITEPATH . $img->store('image/');
-        //     $data = ['uploaded_fileinfo' => new File($filepath)];
-        //     dd($filepath);
-        //     // return view('upload_success', $data);
+        // foreach ($imges['image'] as $key => $img) {
+
+        //     $data['name'] = $this->request->getPost('name');
+        //     $data['type'] = $img->getClientExtension();
+
+        //     if ($img->isValid() && !$img->hasMoved()) {
+        //         $filepath = FCPATH . 'uploads/image/' . $img->getName();
+                
+
+        //         if (file_exists($filepath)) {
+        //             $data = ['uploaded_fileinfo' => new File($filepath)];
+
+        //             $data['path'] = '/uploads/image/' . $img->getName();
+        //             $ImageModel = new Image();
+        //             $ImageModel->storeImagePath($data);
+
+        //         } else {
+        //             echo 'File move failed: file does not exist at the expected location.';
+        //         }
+                
+        //     }
+
+
+        //         $filepath = WRITEPATH . $img->store('image/');
+        //         $data = ['uploaded_fileinfo' => new File($filepath)];
         // }
+
+
 
         $data = ['errors' => 'The file has already been moved.'];
 
@@ -100,6 +136,6 @@ class Home extends BaseController
         // $userModel = model(User::class);
         // $userModel->add_user($data);
 
-        return redirect()->route('/');
+        return redirect()->to('/page/about/');
     }
 }

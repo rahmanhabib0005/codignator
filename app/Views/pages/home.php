@@ -17,7 +17,7 @@
           <br>
 
           <label for="body">Avater</label>
-          <input type="file" name="image" value="">
+          <input type="file" multiple name="image[]" value="">
           <br>
 
           <input type="submit" name="submit" value="Create User">

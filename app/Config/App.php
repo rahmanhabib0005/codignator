@@ -16,26 +16,26 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://localhost:8080';
+    public string $baseURL = '';
 
-    //  public function __construct() {
-    //     $this->set_base_url();
-    // }
+     public function __construct() {
+        $this->set_base_url();
+    }
 
-    // private function set_base_url() {
-    //     if (!$this->baseURL) {
-    //         $domain = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+    private function set_base_url() {
+        if (!$this->baseURL) {
+            $domain = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
             
-    //         $domain = preg_replace('/index.php.*/', '', $domain);
-    //         $domain = strtolower($domain);
+            $domain = preg_replace('/index.php.*/', '', $domain);
+            $domain = strtolower($domain);
             
-    //         if (!empty($_SERVER['HTTPS'])) {
-    //             $this->baseURL = 'https://' . $domain;
-    //         } else {
-    //             $this->baseURL = 'http://' . $domain;
-    //         }
-    //     }
-    // }
+            if (!empty($_SERVER['HTTPS'])) {
+                $this->baseURL = 'https://' . $domain;
+            } else {
+                $this->baseURL = 'http://' . $domain;
+            }
+        }
+    }
 
 
 
@@ -62,7 +62,7 @@ class App extends BaseConfig
      * something else. If you have configured your web server to remove this file
      * from your site URIs, set this variable to an empty string.
      */
-    public string $indexPage = 'index.php';
+    public string $indexPage = '';
 
     /**
      * --------------------------------------------------------------------------
